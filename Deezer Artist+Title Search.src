@@ -1,0 +1,159 @@
+﻿################################################################################
+# Mp3tag Tag Source for Deezer.com (Track Search with Genre)                   
+# https://api.deezer.com                                                       
+#                                                                              
+# INSTRUCTIONS: Save this file into Mp3tag's tag sources directory:             
+#               %APPDATA%\Mp3tag\data\sources                                  
+#                                                                              
+# CHANGELOG                                                                    
+# [2025-12-05]  v2.30  Added genre parsing via album endpoint.                  
+################################################################################
+
+[Name]=Deezer Track Search [2025-12-05 v2.30]
+[BasedOn]=api.deezer.com
+[IndexUrl]=https://api.deezer.com/search/track?q=%s
+[AlbumUrl]=https://api.deezer.com/album/
+[WordSeparator]=%20
+[IndexFormat]=%_preview%|%_coverurl%|%_url%|%Title%|%Artist%|%Album%|%Year%
+[SearchBy]=%Artist% %Title%
+[Encoding]=url-utf-8
+[UserAgent]=1
+
+################################################################################
+#                        LIST OF SEARCH RESULTS DIALOG                         #
+################################################################################
+[ParserScriptIndex]=...
+
+json "ON" "current"
+
+json_foreach "data"
+    # Preview URL
+    say "https://www.deezer.com/track/"
+    json_select "id"
+    SayRest
+    Say "|"
+
+    # Cover
+    json_select_object "album"
+    say "https://cdn-images.dzcdn.net/images/cover/"
+    json_select "cover"
+    SayRest
+    say "/500x500-000000-80-0-0.jpg"
+    Say "|"
+
+    # Album ID (used with AlbumUrl)
+    json_select_object "album"
+    json_select "id"
+    SayRest
+    Say "|"
+    json_unselect_object
+
+    # Track title
+    json_select "title"
+    SayRest
+    Say "|"
+
+    # Artist
+    json_select_object "artist"
+    json_select "name"
+    SayRest
+    Say "|"
+    json_unselect_object
+
+    # Album title
+    json_select_object "album"
+    json_select "title"
+    SayRest
+    Say "|"
+    json_unselect_object
+
+    # Year
+    json_select_object "album"
+    json_select "release_date"
+    SayUntil "-"
+    json_unselect_object
+
+    SayNewline
+json_foreach_end
+
+################################################################################
+#                        ADJUST TAG INFORMATION DIALOG                         #
+################################################################################
+[ParserScriptAlbum]=...
+
+json "ON" "current"
+
+# Album title
+OutputTo "ALBUM"
+json_select "title"
+SayRest
+
+# Album artist
+OutputTo "ALBUMARTIST"
+json_select_object "artist"
+json_select "name"
+SayRest
+json_unselect_object
+
+# Publisher
+OutputTo "PUBLISHER"
+json_select "label"
+SayRest
+
+# Cover
+OutputTo "COVERURL"
+json_select "cover_big"
+SayRest
+
+# Release year
+OutputTo "YEAR"
+json_select "release_date"
+SayUntil "-"
+
+# Full release date
+OutputTo "DATE"
+json_select "release_date"
+SayRest
+
+# Genres
+OutputTo "GENRE"
+json_select_object "genres"
+json_foreach "data"
+    ifnot "0"
+        json_select "name"
+        ifoutput "GENRE"
+            say "/"
+        endif
+        SayRest
+    endif
+json_foreach_end
+json_unselect_object
+
+# Track count
+OutputTo "TOTALTRACKS"
+json_select "nb_tracks"
+SayRest
+
+# Iterate over tracks
+json_select_object "tracks"
+json_foreach "data"
+    ifnot "0"
+        OutputTo "TITLE"
+        json_select "title"
+        SayRest
+        Say "|"
+
+        OutputTo "ARTIST"
+        json_select_object "artist"
+        json_select "name"
+        SayRest
+        Say "|"
+        json_unselect_object
+
+        OutputTo "_LENGTH"
+        json_select "duration"
+        SayRest
+        Say "|"
+    endif
+json_foreach_end
+json_unselect_object

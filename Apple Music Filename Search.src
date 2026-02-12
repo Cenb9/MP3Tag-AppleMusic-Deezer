@@ -1,0 +1,146 @@
+﻿########################################################
+#       Apple Music Web Sources Script for Mp3tag      #
+#       Modified to search by Artist + Title           #
+########################################################
+
+[Name]=Apple (Filename Search)
+[BasedOn]=https://itunes.apple.com
+[IndexUrl]=https://itunes.apple.com/search?country=US&entity=song&term=%s
+[AlbumUrl]=https://itunes.apple.com/lookup?country=US&id=
+[WordSeperator]=+
+[IndexFormat]=%_preview%|%_url%|%Artist%|%Title%|%Album%|%Explicitness%|%Year%|%Genre%|%Country/Region%|
+[SearchBy]=%_filename%
+[Encoding]=url-utf-8
+[UserAgent]=1
+
+########################################################
+#             LIST OF SEARCH RESULTS DIALOG            #
+########################################################
+[ParserScriptIndex]=...
+FindLine "wrapperType\""
+
+do
+    JoinUntil "}"
+    Replace "\\\"" "&quot;"
+    Replace "?uo=4" ""    
+
+    # PREVIEW
+    FindLine "\"trackViewUrl\":\""
+    FindInLine "\"trackViewUrl\":\""
+    SayUntil "\", \""
+    Say "|"
+
+    # URL
+    FindLine "\"trackId\":"
+    FindInLine "\"trackId\":"
+    SayUntil ", \""
+    Say "|"
+
+    # ARTIST
+    FindLine "\"artistName\":\""
+    FindInLine "\"artistName\":\""
+    SayUntil "\", \""
+    Say "|"
+
+    # TITLE
+    FindLine "\"trackName\":\""
+    FindInLine "\"trackName\":\""
+    SayUntil "\", \""
+    Say "|"
+
+    # ALBUM
+    FindLine "\"collectionName\":\""
+    FindInLine "\"collectionName\":\""
+    SayUntil "\", \""
+    Say "|"
+
+    # EXPLICITNESS
+    Replace "notExplicit" "Not Explicit"
+    Replace "explicit" "Explicit 🅴"
+    Replace "cleaned" "Cleaned"
+    FindLine "\"trackExplicitness\":\""
+    FindInLine "\"trackExplicitness\":\""
+    SayUntil "\", \""
+    Say "|"
+
+    # YEAR
+    FindLine "\"releaseDate\":\""
+    FindInLine "\"releaseDate\":\""
+    SayUntil "-"
+    Say "|"
+
+    # GENRE
+    FindLine "\"primaryGenreName\":\""
+    FindInLine "\"primaryGenreName\":\""
+    SayUntil "\""
+    Say "|"
+
+    # COUNTRY
+    FindLine "\"country\":\""
+    FindInLine "\"country\":\""
+    SayUntil "\", \""
+    Say "|"
+
+    SayNewline
+    FindLine "wrapperType\"" 2 1
+while "{\"wrapperType" 201
+
+########################################################
+#             ADJUST TAG INFORMATION DIALOG            #
+########################################################
+[ParserScriptAlbum]=...
+
+FindLine "wrapperType\""
+JoinUntil "}"
+Replace "\\\"" "&quot;"
+Replace "?uo=4" ""
+
+OutputTo "COVERURL"
+Replace "100x100bb" "600x600"
+FindLine "\"artworkUrl100\":\""
+FindInLine "\"artworkUrl100\":\""
+SayUntil "\", \""
+
+OutputTo "ALBUM"
+FindLine "\"collectionName\":\""
+FindInLine "\"collectionName\":\""
+SayUntil "\", \""
+
+OutputTo "TITLE"
+FindLine "\"trackName\":\""
+FindInLine "\"trackName\":\""
+SayUntil "\", \""
+
+OutputTo "ARTIST"
+FindLine "\"artistName\":\""
+FindInLine "\"artistName\":\""
+SayUntil "\", \""
+
+OutputTo "YEAR"
+FindLine "\"releaseDate\":\""
+FindInLine "\"releaseDate\":\""
+SayUntil "-"
+Say "|"
+
+OutputTo "GENRE"
+FindLine "\"primaryGenreName\":\""
+FindInLine "\"primaryGenreName\":\""
+SayUntil "\""
+Say "|"
+
+OutputTo "_LENGTH"
+FindLine "\"trackTimeMillis\":"
+FindInLine "\"trackTimeMillis\":"
+SayUntil ", \""
+Say "|"
+
+OutputTo "ITUNESCATALOGID"
+FindLine "\"trackId\":"
+FindInLine "\"trackId\":"
+SayUntil ", \""
+Say "|"
+
+OutputTo "WWW"
+FindLine "\"trackViewUrl\":\""
+FindInLine "\"trackViewUrl\":\""
+SayUntil "\", \""
