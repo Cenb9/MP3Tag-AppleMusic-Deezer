@@ -54,7 +54,6 @@ Fields: TITLE;ARTIST;ALBUM;ALBUM ARTIST;YEAR;TRACK;GENRE;COVER
 1. Check if any files are ID3v1 only, exclude them and remove all ID3v1 ID3v2.3 tags
 2. Remove extended tags
 3. Filename to Tag
-4. After finishing all, check right bar & extended tags
 
 ● Automatically fill the ALBUM tag with the TITLE value whenever the album field is empty - 
 Actions > Action type: Format value
