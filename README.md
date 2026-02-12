@@ -11,8 +11,6 @@ I modified them to search by Artist+Title & Filename.
 
 ### Download - https://github.com/Cenb9/MP3Tag-AppleMusic-Deezer/releases
 
-
----
 ---
 
 ### How to Use - 
