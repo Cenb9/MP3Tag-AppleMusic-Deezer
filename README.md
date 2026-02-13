@@ -3,9 +3,9 @@ Apple Music & Deezer Web Sources for [MP3Tag](https://www.mp3tag.de)
 
 > Forked from https://github.com/ivadham/AppleMusicWebSources & https://github.com/romanoh/Mp3tag.
 
-* https://github.com/ivadham/AppleMusicWebSources  - Searches By Artist - Album in AppleMusic
+* ```https://github.com/ivadham/AppleMusicWebSources          ➧ Searches By Artist - Album in AppleMusic```
 
-* https://github.com/romanoh/Mp3tag  - Searches By Artist - Album in Deezer
+* ```https://github.com/romanoh/Mp3tag          ➧ Searches By Artist - Album in Deezer```
 
 I modified them to search by Artist+Title & Filename.
 
